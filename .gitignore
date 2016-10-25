@@ -4,3 +4,6 @@
 
 # Gradle Built Stuff
 build/
+
+# Gradle Misc. Stuff
+.gradle/*
