@@ -2,16 +2,11 @@ group 'commercehub'
 version '1.0-SNAPSHOT'
 
 apply plugin: 'java'
+apply plugin: 'groovy'
 
 repositories {
     mavenCentral()
 }
-
-dependencies {
-    testCompile 'junit:junit:4.11'
-}
-
-
 
 sourceSets {
     integrationTest {
@@ -22,11 +17,14 @@ sourceSets {
         }
         resources.srcDir file('src/integration/resources')
     }
-}
-
-configurations {
-    integrationTestCompile.extendsFrom testCompile
-    integrationTestRuntime.extendsFrom testRuntime
+    functionalTest {
+        groovy {
+            compileClasspath += main.output + test.output
+            runtimeClasspath += main.output + test.output
+            srcDir file('src/functional/groovy')
+        }
+        resources.srcDir file('src/functional/resources')
+    }
 }
 
 task integrationTest(type: Test) {
@@ -34,3 +32,33 @@ task integrationTest(type: Test) {
     classpath = sourceSets.integrationTest.runtimeClasspath
     outputs.upToDateWhen { false }
 }
+
+task functionalTest(type: Test) {
+    testClassesDir = sourceSets.functionalTest.output.classesDir
+    classpath = sourceSets.functionalTest.runtimeClasspath
+    outputs.upToDateWhen { false }
+}
+
+dependencies {
+    testCompile (
+        'junit:junit:4.11',
+        'org.codehaus.groovy:groovy-all:2.4.7',
+        'org.spockframework:spock-core:1.1-groovy-2.4-rc-2'
+    )
+
+    functionalTestRuntime (
+        'com.athaydes:spock-reports:1.2.13'
+    )
+}
+
+
+
+configurations {
+    integrationTestCompile.extendsFrom testCompile
+    integrationTestRuntime.extendsFrom testRuntime
+
+    functionalTestCompile.extendsFrom testCompile
+    functionalTestRuntime.extendsFrom testRuntime
+}
+
+
