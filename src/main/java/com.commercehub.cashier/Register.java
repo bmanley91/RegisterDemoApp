@@ -6,7 +6,7 @@ public class Register {
     private int runningTotal;
 
     public Register() {
-        runningTotal = 1;
+        runningTotal = 0;
     }
 
     public Register(int startingTotal) {
